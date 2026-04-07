@@ -19,6 +19,9 @@ export function useAuth() {
     prenom: string;
     nom: string;
     role?: string;
+    ville?: string;
+    whatsapp?: string;
+    niveauAcademique?: string;
   }) => {
     setChargement(true);
     try {
