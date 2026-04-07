@@ -19,6 +19,64 @@ const construireEmbedUrl = (url: string) => {
   return url;
 };
 
+// Composant de validation manuelle des paiements
+function ValiderPaiement({ onSuccess }: { onSuccess: () => void }) {
+  const [form, setForm] = useState({ userId: '', plan: 'PREMIUM', reference: '', methode: 'MonCash' });
+  const [envoi, setEnvoi] = useState(false);
+
+  const valider = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.userId.trim() || !form.reference.trim()) {
+      toast.error('ID utilisateur et référence requis');
+      return;
+    }
+    setEnvoi(true);
+    try {
+      await api.post('/paiements/admin/valider', form);
+      toast.success('✅ Paiement validé — accès premium activé !');
+      setForm({ userId: '', plan: 'PREMIUM', reference: '', methode: 'MonCash' });
+      onSuccess();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Erreur lors de la validation');
+    } finally {
+      setEnvoi(false);
+    }
+  };
+
+  const inputStyle = { width: '100%', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', padding: '10px 14px', color: 'white', fontSize: '14px', outline: 'none', boxSizing: 'border-box' as const };
+
+  return (
+    <form onSubmit={valider} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+      <div>
+        <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>ID utilisateur *</label>
+        <input style={inputStyle} value={form.userId} onChange={e => setForm(f => ({ ...f, userId: e.target.value }))} placeholder="UUID de l'utilisateur" />
+      </div>
+      <div>
+        <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Méthode</label>
+        <select style={{ ...inputStyle }} value={form.methode} onChange={e => setForm(f => ({ ...f, methode: e.target.value }))}>
+          {['MonCash', 'PayPal', 'Zelle', 'Visa', 'Autre'].map(m => <option key={m} value={m}>{m}</option>)}
+        </select>
+      </div>
+      <div>
+        <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Plan</label>
+        <select style={{ ...inputStyle }} value={form.plan} onChange={e => setForm(f => ({ ...f, plan: e.target.value }))}>
+          <option value="PREMIUM">PREMIUM — 100 USD / 3 mois</option>
+          <option value="INSTITUTION">INSTITUTION — 200 USD / 3 mois</option>
+        </select>
+      </div>
+      <div>
+        <label style={{ color: 'rgba(255,255,255,0.6)', fontSize: '12px', display: 'block', marginBottom: '6px' }}>Référence transaction *</label>
+        <input style={inputStyle} value={form.reference} onChange={e => setForm(f => ({ ...f, reference: e.target.value }))} placeholder="N° transaction ou capture" />
+      </div>
+      <div style={{ gridColumn: '1 / -1' }}>
+        <button type="submit" disabled={envoi} style={{ background: 'linear-gradient(135deg, #00D4FF, #7B61FF)', color: 'white', border: 'none', borderRadius: '12px', padding: '12px 24px', fontWeight: 700, fontSize: '14px', cursor: 'pointer', opacity: envoi ? 0.7 : 1 }}>
+          {envoi ? '⏳ Validation...' : '✅ Valider et activer l\'accès premium'}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 export default function PageAdmin() {
   const router = useRouter();
   const [metriques, setMetriques] = useState<any>(null);
@@ -453,6 +511,102 @@ export default function PageAdmin() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {onglet === 'paiements' && (
+            <div>
+              <h2 style={{ color: 'white', fontSize: '20px', fontWeight: 700, marginBottom: '20px' }}>
+                💳 Gestion des paiements
+              </h2>
+
+              {/* Stats rapides */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
+                {[
+                  { label: 'Abonnements actifs', value: abonnements.filter((a: any) => a.statut === 'ACTIF').length, color: '#00D4FF' },
+                  { label: 'Expirés', value: abonnements.filter((a: any) => a.statut === 'EXPIRE').length, color: '#F59E0B' },
+                  { label: 'Annulés', value: abonnements.filter((a: any) => a.statut === 'ANNULE').length, color: '#EF4444' },
+                ].map(s => (
+                  <div key={s.label} style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '12px', padding: '16px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '28px', fontWeight: 800, color: s.color }}>{s.value}</div>
+                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '4px' }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Validation manuelle */}
+              <div style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.2)', borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
+                <h3 style={{ color: '#00D4FF', fontSize: '15px', fontWeight: 700, marginBottom: '16px' }}>
+                  ✅ Valider un paiement manuellement (MonCash / PayPal / Zelle)
+                </h3>
+                <ValiderPaiement onSuccess={() => api.get('/paiements/admin/liste').then(r => setAbonnements(Array.isArray(r.data) ? r.data : []))} />
+              </div>
+
+              {/* Liste des abonnements */}
+              <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '16px', padding: '20px' }}>
+                <h3 style={{ color: 'white', fontSize: '15px', fontWeight: 700, marginBottom: '16px' }}>
+                  📋 Tous les abonnements ({abonnements.length})
+                </h3>
+                {abonnements.length === 0 ? (
+                  <p style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '32px' }}>Aucun abonnement pour le moment</p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {abonnements.map((ab: any) => (
+                      <div key={ab.id} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+                        <div>
+                          <div style={{ color: 'white', fontWeight: 600, fontSize: '14px' }}>
+                            {ab.user?.prenom} {ab.user?.nom}
+                          </div>
+                          <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>{ab.user?.email}</div>
+                          <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px', marginTop: '2px' }}>
+                            Réf: {ab.stripeId || '—'} · {ab.montant} USD
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                          <span style={{
+                            fontSize: '11px', fontWeight: 700, padding: '4px 10px', borderRadius: '20px',
+                            background: ab.statut === 'ACTIF' ? 'rgba(0,212,255,0.15)' : 'rgba(239,68,68,0.15)',
+                            color: ab.statut === 'ACTIF' ? '#00D4FF' : '#EF4444',
+                          }}>
+                            {ab.statut === 'ACTIF' ? '✅ ACTIF' : ab.statut === 'EXPIRE' ? '⏰ EXPIRÉ' : '❌ ANNULÉ'}
+                          </span>
+                          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>
+                            {ab.plan} · jusqu'au {ab.dateFin ? new Date(ab.dateFin).toLocaleDateString('fr-FR') : '—'}
+                          </span>
+                          {ab.statut === 'ACTIF' && (
+                            <button
+                              onClick={async () => {
+                                if (!confirm('Révoquer cet abonnement ?')) return;
+                                try {
+                                  await api.patch('/paiements/admin/revoquer/' + ab.userId);
+                                  toast.success('Abonnement révoqué');
+                                  const r = await api.get('/paiements/admin/liste');
+                                  setAbonnements(Array.isArray(r.data) ? r.data : []);
+                                } catch { toast.error('Erreur'); }
+                              }}
+                              style={{ fontSize: '11px', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', color: '#F87171', borderRadius: '8px', padding: '4px 10px', cursor: 'pointer' }}
+                            >
+                              Révoquer
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Info MonCash */}
+              <div style={{ background: 'rgba(255,102,0,0.08)', border: '1px solid rgba(255,102,0,0.2)', borderRadius: '16px', padding: '20px', marginTop: '20px' }}>
+                <h3 style={{ color: '#FF6600', fontSize: '14px', fontWeight: 700, marginBottom: '8px' }}>
+                  📱 MonCash automatique — En attente de configuration
+                </h3>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', lineHeight: 1.6 }}>
+                  Pour activer le paiement MonCash automatique, fournissez vos credentials Digicel :<br/>
+                  <code style={{ color: '#FF6600' }}>MONCASH_CLIENT_ID</code> et <code style={{ color: '#FF6600' }}>MONCASH_SECRET_KEY</code><br/>
+                  Ces variables doivent être ajoutées dans Render → Environment. En attendant, les paiements MonCash sont validés manuellement ci-dessus.
+                </p>
               </div>
             </div>
           )}
