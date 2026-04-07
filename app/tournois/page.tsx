@@ -57,9 +57,9 @@ const FORM_TOURNOI_VIDE = {
 };
 
 export default function PageTournois() {
-  const [tournois, setTournois] = useState<any[]>(MOCK_TOURNOIS);
-  const [equipes, setEquipes] = useState<Record<string, any[]>>(MOCK_EQUIPES);
-  const [classement] = useState<any[]>(MOCK_CLASSEMENT);
+  const [tournois, setTournois] = useState<any[]>([]);
+  const [equipes, setEquipes] = useState<Record<string, any[]>>({});
+  const [classement] = useState<any[]>([]);
   const [sponsors, setSponsors] = useState<any[]>([]);
   const [tournoiEquipesOuvert, setTournoiEquipesOuvert] = useState<any>(null);
   const [modalInscription, setModalInscription] = useState<any>(null);
