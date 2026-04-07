@@ -60,6 +60,7 @@ export default function PageLives() {
   const [erreurUrl, setErreurUrl] = useState('');
   const [messageSucces, setMessageSucces] = useState('');
   const [spectateurs, setSpectateurs] = useState(248);
+  const [liveActif, setLiveActif] = useState<any>(null);
   const { utilisateur } = useAuthStore();
 
   const estAdmin = ['ADMIN', 'FORMATEUR'].includes(utilisateur?.role || '');
@@ -77,6 +78,7 @@ export default function PageLives() {
         const data = await r.json();
         if (Array.isArray(data) && data.length > 0) {
           setLives(data);
+          setLiveActif(data.find((l: any) => l.statut === 'EN_DIRECT') || null);
           return;
         }
       }
@@ -100,7 +102,7 @@ export default function PageLives() {
   };
 
   // Compteur spectateurs simulé pour le live actif
-  const liveActif = lives.find(l => l.statut === 'EN_DIRECT');
+  
   const replays = lives.filter(l => l.statut === 'TERMINE');
   const programmes = lives.filter(l => l.statut === 'PROGRAMME');
 
@@ -116,7 +118,7 @@ export default function PageLives() {
     setErreurUrl('');
     if (!url.trim()) { setApercu(''); return; }
     const embed = construireEmbedUrl(url.trim());
-    if (embed && embed !== url) {
+    if (embed) {
       setApercu(embed);
     } else {
       setApercu('');
@@ -146,6 +148,7 @@ export default function PageLives() {
     };
 
     // 1. Ajouter localement IMMÉDIATEMENT — visible tout de suite
+    if (nouveauLive.statut === 'EN_DIRECT') setLiveActif(nouveauLive);
     setLives(prev => [nouveauLive, ...prev]);
     setModalAjout(false);
     setForm(FORM_VIDE);
@@ -177,6 +180,7 @@ export default function PageLives() {
     if (!confirm('Supprimer ce live définitivement ?')) return;
     setLives(prev => prev.filter(l => l.id !== id));
     if (liveSelectionne?.id === id) setLiveSelectionne(null);
+    if (liveActif?.id === id) setLiveActif(null);
     try {
       await fetch(API_URL + '/lives/' + id, {
         method: 'DELETE',
