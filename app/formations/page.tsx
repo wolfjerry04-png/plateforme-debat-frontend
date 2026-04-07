@@ -435,7 +435,7 @@ export default function PageFormations() {
               ⚙️ Configuration
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Niveau</label>
                 <select value={formCours.niveau} onChange={e => setFormCours({ ...formCours, niveau: e.target.value })} className={inputStyle}>
@@ -452,7 +452,7 @@ export default function PageFormations() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Durée totale</label>
                 <input type="text" value={formCours.duree} onChange={e => setFormCours({ ...formCours, duree: e.target.value })}
@@ -619,7 +619,7 @@ export default function PageFormations() {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-3 gap-4 mb-6">
           {[
             { label: 'Total', val: (vueInscrits.inscrits || []).length, bg: 'bg-blue-50', text: 'text-blue-900' },
             { label: 'En cours', val: (vueInscrits.inscrits || []).filter((i: any) => i.statut === 'EN_COURS').length, bg: 'bg-yellow-50', text: 'text-yellow-700' },
@@ -638,7 +638,7 @@ export default function PageFormations() {
               <p>Aucun inscrit pour le moment</p>
             </div>
           ) : (
-            <div className="overflow-x-auto"><table className="w-full text-sm">
+            <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="text-left px-4 py-3 font-semibold text-gray-600">Étudiant</th>
@@ -680,6 +680,7 @@ export default function PageFormations() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>

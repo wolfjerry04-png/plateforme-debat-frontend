@@ -57,16 +57,16 @@ const FORM_TOURNOI_VIDE = {
 };
 
 export default function PageTournois() {
-  const [tournois, setTournois] = useState<any[]>([]);
-  const [equipes, setEquipes] = useState<Record<string, any[]>>({});
-  const [classement] = useState<any[]>([]);
+  const [tournois, setTournois] = useState<any[]>(MOCK_TOURNOIS);
+  const [equipes, setEquipes] = useState<Record<string, any[]>>(MOCK_EQUIPES);
+  const [classement] = useState<any[]>(MOCK_CLASSEMENT);
   const [sponsors, setSponsors] = useState<any[]>([]);
   const [tournoiEquipesOuvert, setTournoiEquipesOuvert] = useState<any>(null);
   const [modalInscription, setModalInscription] = useState<any>(null);
   const [modalTournoi, setModalTournoi] = useState(false);
   const [tournoiEdition, setTournoiEdition] = useState<any>(null);
   const [formTournoi, setFormTournoi] = useState<any>(FORM_TOURNOI_VIDE);
-  const [formEquipe, setFormEquipe] = useState({ nom: '', membres: ['', '', '', ''], contact: '' });
+  const [formEquipe, setFormEquipe] = useState({ nom: '', membres: ['', '', ''], contact: '' });
   const [envoi, setEnvoi] = useState(false);
   const [messageSucces, setMessageSucces] = useState('');
   const defileurRef = useRef<HTMLDivElement>(null);
@@ -149,7 +149,7 @@ export default function PageTournois() {
     }));
     setMessageSucces("Équipe « " + formEquipe.nom + " » inscrite avec succès !");
     setModalInscription(null);
-    setFormEquipe({ nom: '', membres: ['', '', '', ''], contact: '' });
+    setFormEquipe({ nom: '', membres: ['', '', ''], contact: '' });
     setEnvoi(false);
   };
 
@@ -271,7 +271,7 @@ export default function PageTournois() {
                   <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-500">📍 {tournoi.lieu}</span>
                 )}
               </div>
-              <a href={"/tournois/" + tournoi.id} className="hover:text-blue-700 cursor-pointer"><h3 className="font-bold text-gray-900 text-base mb-1">{tournoi.nom}</h3></a>
+              <h3 className="font-bold text-gray-900 text-base mb-1">{tournoi.nom}</h3>
               <p className="text-gray-500 text-sm mb-3 line-clamp-2">{tournoi.description}</p>
               <div className="flex gap-4 text-xs text-gray-400 flex-wrap">
                 <span>👥 {equipesTournoi.length}/{tournoi.maxEquipes} équipes</span>
@@ -444,7 +444,7 @@ export default function PageTournois() {
       <div id="classement" className="mt-12">
         <h2 className="text-xl font-bold text-blue-900 mb-6">🏅 Classement général — Saison 2026</h2>
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="overflow-x-auto"><table className="w-full text-sm">
+          <table className="w-full text-sm">
             <thead className="bg-blue-900 text-white">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold">Rang</th>
@@ -468,6 +468,7 @@ export default function PageTournois() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
 
@@ -641,7 +642,7 @@ export default function PageTournois() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea value={formTournoi.description} onChange={e => setFormTournoi({ ...formTournoi, description: e.target.value })} placeholder="Décrivez le tournoi..." className={inputStyle + ' h-20 resize-none'} />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
                   <input type="datetime-local" value={formTournoi.dateDebut} onChange={e => setFormTournoi({ ...formTournoi, dateDebut: e.target.value })} required className={inputStyle} />
@@ -651,7 +652,7 @@ export default function PageTournois() {
                   <input type="datetime-local" value={formTournoi.dateFin} onChange={e => setFormTournoi({ ...formTournoi, dateFin: e.target.value })} className={inputStyle} />
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Lieu</label>
                   <input type="text" value={formTournoi.lieu} onChange={e => setFormTournoi({ ...formTournoi, lieu: e.target.value })} placeholder="Port-au-Prince" className={inputStyle} />

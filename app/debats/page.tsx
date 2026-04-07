@@ -234,7 +234,7 @@ export default function PageDebats() {
         )}
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="overflow-x-auto"><table className="w-full text-sm">
+          <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="text-left px-4 py-3 font-semibold text-gray-600">Sujet</th>
@@ -279,6 +279,7 @@ export default function PageDebats() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
 
         {modalOuvert && (
@@ -299,7 +300,7 @@ export default function PageDebats() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                   <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Décrivez le sujet du débat..." required className={inputStyle + ' h-24 resize-none'} />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
                     <select value={form.categorie} onChange={e => setForm({ ...form, categorie: e.target.value })} className={inputStyle}>
