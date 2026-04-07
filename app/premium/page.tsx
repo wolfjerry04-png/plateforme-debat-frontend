@@ -8,6 +8,7 @@ export default function PagePremium() {
   const [modal, setModal] = useState<{ montant: number; description: string } | null>(null);
 
   return (
+    <style>{`.plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; } @media (max-width: 900px) { .plans-grid { grid-template-columns: 1fr; } } @media (max-width: 480px) { .plans-grid { gap: 16px; } }`}</style>
     <div style={{ background: '#0A0F1E', minHeight: '100vh', color: 'white', padding: '80px 24px' }}>
       {modal && <ModalPaiement montant={modal.montant} description={modal.description} onFermer={() => setModal(null)} />}
 
@@ -18,7 +19,7 @@ export default function PagePremium() {
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '18px' }}>Investissez dans votre maîtrise du débat</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', alignItems: 'start' }}>
+        <div className="plans-grid">
 
           {/* Gratuit */}
           <div style={{ background: 'rgba(255,255,255,0.03)', border: '2px solid rgba(255,255,255,0.08)', borderRadius: '24px', padding: '32px' }}>
@@ -108,5 +109,6 @@ export default function PagePremium() {
         </div>
       </div>
     </div>
+  </>
   );
 }

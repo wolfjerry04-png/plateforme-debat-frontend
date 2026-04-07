@@ -444,7 +444,7 @@ export default function PageTournois() {
       <div id="classement" className="mt-12">
         <h2 className="text-xl font-bold text-blue-900 mb-6">🏅 Classement général — Saison 2026</h2>
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full text-sm">
             <thead className="bg-blue-900 text-white">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold">Rang</th>
@@ -641,7 +641,7 @@ export default function PageTournois() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                 <textarea value={formTournoi.description} onChange={e => setFormTournoi({ ...formTournoi, description: e.target.value })} placeholder="Décrivez le tournoi..." className={inputStyle + ' h-20 resize-none'} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
                   <input type="datetime-local" value={formTournoi.dateDebut} onChange={e => setFormTournoi({ ...formTournoi, dateDebut: e.target.value })} required className={inputStyle} />
@@ -651,7 +651,7 @@ export default function PageTournois() {
                   <input type="datetime-local" value={formTournoi.dateFin} onChange={e => setFormTournoi({ ...formTournoi, dateFin: e.target.value })} className={inputStyle} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Lieu</label>
                   <input type="text" value={formTournoi.lieu} onChange={e => setFormTournoi({ ...formTournoi, lieu: e.target.value })} placeholder="Port-au-Prince" className={inputStyle} />

@@ -449,7 +449,7 @@ export default function PageLives() {
               {/* Statut */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Type de publication</label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   {[
                     { val: 'EN_DIRECT', label: '🔴 En direct', color: 'border-red-500 bg-red-50 text-red-700' },
                     { val: 'TERMINE', label: '📼 Replay', color: 'border-gray-500 bg-gray-50 text-gray-700' },
@@ -523,7 +523,7 @@ export default function PageLives() {
               </div>
 
               {/* Catégorie + Date */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
                   <select value={form.categorie} onChange={e => setForm((f: any) => ({ ...f, categorie: e.target.value }))} className={inputCls}>
