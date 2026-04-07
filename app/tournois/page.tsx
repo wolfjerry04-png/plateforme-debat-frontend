@@ -66,7 +66,7 @@ export default function PageTournois() {
   const [modalTournoi, setModalTournoi] = useState(false);
   const [tournoiEdition, setTournoiEdition] = useState<any>(null);
   const [formTournoi, setFormTournoi] = useState<any>(FORM_TOURNOI_VIDE);
-  const [formEquipe, setFormEquipe] = useState({ nom: '', membres: ['', '', ''], contact: '' });
+  const [formEquipe, setFormEquipe] = useState({ nom: '', membres: ['', '', '', ''], contact: '' });
   const [envoi, setEnvoi] = useState(false);
   const [messageSucces, setMessageSucces] = useState('');
   const defileurRef = useRef<HTMLDivElement>(null);
@@ -149,7 +149,7 @@ export default function PageTournois() {
     }));
     setMessageSucces("Équipe « " + formEquipe.nom + " » inscrite avec succès !");
     setModalInscription(null);
-    setFormEquipe({ nom: '', membres: ['', '', ''], contact: '' });
+    setFormEquipe({ nom: '', membres: ['', '', '', ''], contact: '' });
     setEnvoi(false);
   };
 
