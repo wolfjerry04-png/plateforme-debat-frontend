@@ -24,7 +24,7 @@ export default function ClochNotifications() {
 
       {/* Panneau notifications */}
       {ouvert && (
-        <div className="absolute right-0 top-10 w-80 bg-white rounded-xl shadow-lg border border-gray-100 z-50">
+        <div className="absolute right-0 top-10 w-80    border border-gray-100 z-50">
           <div className="p-3 border-b border-gray-100">
             <h3 className="font-semibold text-gray-900 text-sm">Notifications</h3>
           </div>

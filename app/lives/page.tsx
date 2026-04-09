@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
+import { useLiveSocket } from '@/hooks/useLiveSocket';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://plateforme-debat-backend.onrender.com/api';
 
@@ -59,8 +60,8 @@ export default function PageLives() {
   const [apercu, setApercu] = useState(''); // URL convertie en preview
   const [erreurUrl, setErreurUrl] = useState('');
   const [messageSucces, setMessageSucces] = useState('');
-  const [spectateurs, setSpectateurs] = useState(248);
   const [liveActif, setLiveActif] = useState<any>(null);
+  const { spectateurs } = useLiveSocket(liveActif?.id ?? null);
   const { utilisateur } = useAuthStore();
 
   const estAdmin = ['ADMIN', 'FORMATEUR'].includes(utilisateur?.role || '');
@@ -101,16 +102,8 @@ export default function PageLives() {
     ]);
   };
 
-  // Compteur spectateurs simulé pour le live actif
-  
   const replays = lives.filter(l => l.statut === 'TERMINE');
   const programmes = lives.filter(l => l.statut === 'PROGRAMME');
-
-  useEffect(() => {
-    if (!liveActif) return;
-    const iv = setInterval(() => setSpectateurs(p => Math.max(1, p + Math.floor(Math.random() * 5) - 2)), 4000);
-    return () => clearInterval(iv);
-  }, [liveActif]);
 
   // Aperçu URL en temps réel
   const handleUrlChange = (url: string) => {
@@ -192,7 +185,7 @@ export default function PageLives() {
   const inputCls = 'w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500';
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
 
       {/* Message succès */}
       {messageSucces && (
@@ -204,72 +197,63 @@ export default function PageLives() {
 
       {/* ── EN DIRECT ── */}
       <div className="mb-10">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <span className="w-3 h-3 rounded-full bg-red-500 animate-pulse inline-block" />
-            <h1 className="text-2xl font-bold text-gray-900">En direct maintenant</h1>
-          </div>
-          {estAdmin && (
+        {estAdmin && (
+          <div style={{ padding:"20px 32px", borderBottom:"1px solid var(--line2)", display:"flex", justifyContent:"flex-end" }}>
             <button
               onClick={() => { setForm({ ...FORM_VIDE, statut: 'EN_DIRECT' }); setModalAjout(true); }}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2"
+              className="dh-btn"
+              style={{ background:"var(--red)", borderColor:"var(--red)", fontSize:"9px" }}
             >
-              🔴 + Démarrer un live
+              Démarrer un live
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {liveActif ? (
-          <div className="rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
-            {/* Lecteur vidéo */}
-            <div className="relative bg-black" style={{ paddingTop: '56.25%' }}>
+          <div className="dh-live-hero">
+            <div className="dh-live-player">
               <iframe
                 src={construireEmbedUrl(liveActif.youtubeUrl || '')}
                 title={liveActif.titre}
-                className="absolute inset-0 w-full h-full"
+                style={{ position:'absolute', inset:0, width:'100%', height:'100%', border:'none' }}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
             </div>
-            {/* Infos live */}
-            <div className="bg-gray-900 text-white p-5">
-              <div className="flex justify-between items-start flex-wrap gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex gap-2 mb-2 flex-wrap">
-                    <span className="text-xs bg-red-500 px-2 py-1 rounded font-bold animate-pulse">🔴 EN DIRECT</span>
-                    <span className={`text-xs px-2 py-1 rounded font-medium ${getBadge(liveActif.categorie)}`}>{liveActif.categorie}</span>
-                  </div>
-                  <h2 className="text-lg font-bold mb-1">{liveActif.titre}</h2>
-                  <p className="text-gray-400 text-sm">{liveActif.description}</p>
+            <div className="dh-live-overlay">
+              <div>
+                <div style={{ display:'flex', gap:'8px', marginBottom:'10px', flexWrap:'wrap' }}>
+                  <span className="dh-tag-live" style={{ display:'inline-flex', alignItems:'center', gap:'5px' }}>
+                    <span className="dh-live-dot" />En direct
+                  </span>
+                  <span className="dh-tag" style={{ border:'1px solid rgba(244,240,233,.2)', color:'rgba(244,240,233,.5)' }}>{liveActif.categorie}</span>
                 </div>
-                <div className="text-center flex-shrink-0">
-                  <div className="text-2xl font-bold text-white">{spectateurs}</div>
-                  <div className="text-xs text-gray-400">spectateurs</div>
-                </div>
+                <div className="dh-live-title">{liveActif.titre}</div>
               </div>
-              {estAdmin && (
-                <div className="mt-4 pt-3 border-t border-gray-700 flex gap-2">
-                  <button
-                    onClick={() => supprimerLive(liveActif.id)}
-                    className="text-xs bg-red-900 hover:bg-red-800 text-red-300 px-4 py-2 rounded-lg font-medium transition"
-                  >
-                    🗑 Supprimer ce live
-                  </button>
-                </div>
-              )}
+              <div className="dh-live-spec">
+                <div className="dh-live-spec-n">{spectateurs}</div>
+                <div className="dh-live-spec-l">Spectateurs</div>
+              </div>
             </div>
+            {estAdmin && (
+              <div style={{ padding:'12px 32px', background:'var(--ink)', display:'flex', justifyContent:'flex-end', borderTop:'1px solid rgba(244,240,233,.1)' }}>
+                <button onClick={() => supprimerLive(liveActif.id)} className="dh-btn" style={{ background:'transparent', borderColor:'rgba(244,240,233,.2)', color:'rgba(244,240,233,.6)', fontSize:'9px' }}>
+                  Supprimer ce live
+                </button>
+              </div>
+            )}
           </div>
         ) : (
-          <div className="bg-gray-900 rounded-2xl p-12 text-center text-white">
-            <div className="text-5xl mb-4">📡</div>
-            <h2 className="text-xl font-bold mb-2">Aucun débat en direct pour l'instant</h2>
-            <p className="text-gray-400 text-sm mb-6">Consultez les replays ci-dessous ou revenez bientôt.</p>
+          <div style={{ background:'var(--ink)', padding:'64px 40px', textAlign:'center' }}>
+            <div style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:'10px', letterSpacing:'.1em', textTransform:'uppercase', color:'rgba(244,240,233,.25)', marginBottom:'14px' }}>
+              Aucun débat en direct pour l'instant
+            </div>
+            <p style={{ fontFamily:'Georgia,serif', fontStyle:'italic', fontSize:'16px', color:'rgba(244,240,233,.4)', marginBottom:'24px' }}>
+              Consultez les replays ci-dessous ou revenez bientôt.
+            </p>
             {estAdmin && (
-              <button
-                onClick={() => { setForm({ ...FORM_VIDE, statut: 'EN_DIRECT' }); setModalAjout(true); }}
-                className="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition"
-              >
-                🔴 Démarrer un live
+              <button onClick={() => { setForm({ ...FORM_VIDE, statut: 'EN_DIRECT' }); setModalAjout(true); }} className="dh-btn dh-btn-inv" style={{ fontSize:'9px' }}>
+                Démarrer un live
               </button>
             )}
           </div>
@@ -300,20 +284,14 @@ export default function PageLives() {
       )}
 
       {/* ── REPLAYS ── */}
-      <div className="mb-10">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-900">📼 Replays disponibles</h2>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-400">{replays.length} vidéo{replays.length > 1 ? 's' : ''}</span>
-            {estAdmin && (
-              <button
-                onClick={() => { setForm({ ...FORM_VIDE, statut: 'TERMINE' }); setModalAjout(true); }}
-                className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition"
-              >
-                + Ajouter un replay
-              </button>
-            )}
-          </div>
+      <div style={{ padding:"40px" }}>
+        <div className="dh-sec-lbl" style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+          <span>Replays — {replays.length} vidéo{replays.length > 1 ? 's' : ''}</span>
+          {estAdmin && (
+            <button onClick={() => { setForm({ ...FORM_VIDE, statut: 'TERMINE' }); setModalAjout(true); }} className="dh-btn dh-btn-outline" style={{ fontSize:'9px', padding:'6px 16px' }}>
+              Ajouter un replay
+            </button>
+          )}
         </div>
 
         {replays.length === 0 ? (

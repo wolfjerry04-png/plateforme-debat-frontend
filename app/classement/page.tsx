@@ -4,76 +4,97 @@ import { useEffect, useState } from 'react';
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
 import api from '@/lib/api';
 
+const MOCK_CLASSEMENT = [
+  { userId:'u1', points:2840, niveau:12, user:{ prenom:'Marie',  nom:'Joseph',  role:'APPRENANT' }},
+  { userId:'u2', points:2180, niveau:10, user:{ prenom:'Paul',   nom:'Duval',   role:'APPRENANT' }},
+  { userId:'u3', points:1950, niveau:9,  user:{ prenom:'Sarah',  nom:'Luc',     role:'FORMATEUR' }},
+  { userId:'u4', points:1720, niveau:8,  user:{ prenom:'René',   nom:'Fils',    role:'APPRENANT' }},
+  { userId:'u5', points:1480, niveau:7,  user:{ prenom:'Jean',   nom:'Charles', role:'APPRENANT' }},
+  { userId:'u6', points:1230, niveau:6,  user:{ prenom:'Anne',   nom:'Michel',  role:'APPRENANT' }},
+  { userId:'u7', points:980,  niveau:5,  user:{ prenom:'Patrick',nom:'Fils',    role:'APPRENANT' }},
+];
+
+const ROLE_LABEL: Record<string,string> = {
+  ADMIN:'Admin', FORMATEUR:'Formateur', APPRENANT:'Apprenant', SPECTATEUR:'Spectateur',
+};
+
+const initiales = (p:string,n:string) => (p[0]||'')+(n[0]||'');
+
 export default function PageClassement() {
-  const [classement, setClassement] = useState([]);
-  const [chargement, setChargement] = useState(true);
+  const [classement, setClassement] = useState<any[]>(MOCK_CLASSEMENT);
 
   useEffect(() => {
-    const charger = async () => {
-      try {
-        const { data } = await api.get('/gamification/classement?limite=20');
-        setClassement(data);
-      } finally {
-        setChargement(false);
-      }
-    };
-    charger();
+    api.get('/gamification/classement?limite=20')
+      .then(({ data }) => { if (Array.isArray(data) && data.length) setClassement(data); })
+      .catch(() => {});
   }, []);
 
-  const getMedaille = (index: number) => {
-    if (index === 0) return '🥇';
-    if (index === 1) return '🥈';
-    if (index === 2) return '🥉';
-    return `#${index + 1}`;
-  };
+  const top3  = classement.slice(0, 3);
+  const reste = classement.slice(3);
+
+  const podiumOrder = top3.length === 3 ? [top3[1], top3[0], top3[2]] : top3;
 
   return (
     <ProtectedRoute>
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-blue-900 mb-2">
-          🏆 Classement général
-        </h1>
-        <p className="text-gray-500 text-sm mb-6">
-          Les 20 meilleurs débatteurs de la plateforme
-        </p>
+      <div style={{ maxWidth:'900px', margin:'0 auto' }}>
+        {/* Header */}
+        <div style={{ padding:'48px 40px 24px', borderBottom:'1px solid var(--line2)' }}>
+          <h1 style={{ fontFamily:'Georgia,serif', fontSize:'30px', fontWeight:'normal', letterSpacing:'-.015em', marginBottom:'4px' }}>
+            Classement général
+          </h1>
+          <p style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:'12px', color:'var(--muted)' }}>
+            Les meilleurs débatteurs — Saison 2026
+          </p>
+        </div>
 
-        {chargement ? (
-          <div className="text-center py-12 text-gray-400">Chargement...</div>
-        ) : classement.length === 0 ? (
-          <div className="text-center py-12 text-gray-400">
-            Aucun résultat pour le moment.
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {classement.map((item: any, index) => (
-              <div
-                key={item.userId}
-                className={`bg-white rounded-xl p-4 shadow-sm flex items-center gap-4 ${
-                  index < 3 ? 'border-2 border-yellow-200' : 'border border-gray-100'
-                }`}
-              >
-                <span className="text-xl font-bold w-8 text-center">
-                  {getMedaille(index)}
-                </span>
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-900">
-                  {item.user.prenom[0]}
+        {/* Stats */}
+        <div className="dh-stat-grid" style={{ margin:'0', borderTop:'none', borderLeft:'none', borderRight:'none' }}>
+          {[['500+','Débatteurs'],['347','Débats'],['18','Tournois'],['50+','Formations']].map(([n,l])=>(
+            <div key={l} className="dh-stat-card">
+              <div className="dh-stat-card-n">{n}</div>
+              <div className="dh-stat-card-l">{l}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Podium top 3 */}
+        {top3.length >= 3 && (
+          <div className="dh-podium" style={{ marginTop:'1px' }}>
+            {podiumOrder.map((item, i) => {
+              const rang = classement.indexOf(item) + 1;
+              const isPremier = rang === 1;
+              return (
+                <div key={item.userId} className={`dh-pod dh-pod-${rang}`}>
+                  <div className="dh-pod-rank">{String(rang).padStart(2,'0')}</div>
+                  <div className="dh-pod-av">{initiales(item.user.prenom, item.user.nom)}</div>
+                  <div className="dh-pod-name">{item.user.prenom} {item.user.nom}</div>
+                  <div className="dh-pod-pts">{item.points.toLocaleString('fr-FR')}</div>
+                  <div className="dh-pod-lbl">Points · Niveau {item.niveau}</div>
                 </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-gray-900">
-                    {item.user.prenom} {item.user.nom}
-                  </p>
-                  <p className="text-xs text-gray-400">
-                    Niveau {item.niveau} · {item.user.role}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-blue-900">{item.points}</p>
-                  <p className="text-xs text-gray-400">points</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
+
+        {/* Reste de la liste */}
+        <div className="dh-rank-list">
+          {reste.map((item, i) => {
+            const rang = i + 4;
+            const av = initiales(item.user.prenom, item.user.nom);
+            return (
+              <div key={item.userId} className="dh-rank-row">
+                <div className="dh-rank-n">{rang}</div>
+                <div className="dh-rank-av" style={{ background:'var(--page3)', color:'var(--ink)' }}>{av}</div>
+                <div style={{ flex:1 }}>
+                  <div className="dh-rank-name">{item.user.prenom} {item.user.nom}</div>
+                  <div className="dh-rank-role">Niveau {item.niveau} · {ROLE_LABEL[item.user.role]||item.user.role}</div>
+                </div>
+                <div className="dh-rank-pts">{item.points.toLocaleString('fr-FR')}</div>
+                <div style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:'10px', color:'var(--muted)', marginLeft:'4px' }}>pts</div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </ProtectedRoute>
   );

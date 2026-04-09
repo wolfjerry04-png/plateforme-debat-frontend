@@ -19,7 +19,7 @@ const ROUTES_PROTEGEES = [
 // (évite qu'un utilisateur connecté revienne sur /connexion)
 const ROUTES_AUTH = ['/auth/connexion', '/auth/inscription'];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Lire le token depuis le cookie (écrit par lib/auth.ts → sauvegarderSession)

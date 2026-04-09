@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
+import { useDebatSocket } from '@/hooks/useDebatSocket';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://plateforme-debat-backend.onrender.com/api';
 
@@ -47,6 +48,24 @@ export default function PageDebat() {
   const [onglet, setOnglet] = useState<'debat' | 'feedback'>('debat');
 
   const peutParticiper = ['ADMIN', 'FORMATEUR', 'APPRENANT'].includes(utilisateur?.role || '');
+
+  // ── Temps réel via WebSocket ──
+  useDebatSocket({
+    debatId: id as string,
+    onNouveauMessage: (msg) => {
+      setMessages(prev => {
+        // Éviter les doublons si le message vient de nous
+        if (prev.find((m: any) => m.id === msg.id)) return prev;
+        return [...prev, msg];
+      });
+    },
+    onVotesMisAJour: (stats) => {
+      setDebat((prev: any) => prev ? { ...prev, votes: stats } : prev);
+    },
+    onStatutDebat: (data) => {
+      setDebat((prev: any) => prev ? { ...prev, statut: data.statut } : prev);
+    },
+  });
   const estSpectateur = utilisateur?.role === 'SPECTATEUR';
 
   useEffect(() => {
@@ -74,50 +93,37 @@ export default function PageDebat() {
     setArgumentAnalyse(argument);
     setOnglet('feedback');
 
-    const modules = MODULES_PAR_CATEGORIE[debat?.categorie] || MODULES_PAR_CATEGORIE['default'];
-    const derniersMessages = messages.slice(-3).map((m: any) => m.contenu).join('\n- ');
-
-    const prompt = `Tu es un assistant spécialisé dans l'art du débat haïtien. Tu analyses les arguments en tenant compte du contexte suivant :
-
-DÉBAT EN COURS : ${debat?.titre}
-CATÉGORIE : ${debat?.categorie}
-DESCRIPTION : ${debat?.description}
-RESSOURCES DE FORMATION DISPONIBLES : ${modules.join(', ')}
-DERNIERS ARGUMENTS DU DÉBAT : ${derniersMessages || 'Aucun encore'}
-
-Analyse cet argument : "${argument}"
-
-Réponds UNIQUEMENT en JSON valide (sans markdown) avec cette structure exacte :
-{
-  "scores": { "logique": 7, "sources": 5, "persuasion": 8 },
-  "pointsForts": ["Point fort 1", "Point fort 2"],
-  "pointsAmeliorer": ["À améliorer 1", "À améliorer 2"],
-  "suggestion": "Une suggestion concrète basée sur le contexte haïtien",
-  "moduleRecommande": "${modules[0]}"
-}
-
-Sois encourageant mais honnête. Réponds en français.`;
+    const derniersMessages = messages.slice(-3).map((m: any) => m.contenu);
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{ role: 'user', content: prompt }],
-        }),
+      // Appel sécurisé via le backend — clé Anthropic protégée côté serveur
+      const { data } = await api.post('/ia/analyser-argument', {
+        argument,
+        titreDebat:        debat?.titre,
+        categorie:         debat?.categorie,
+        derniersArguments: derniersMessages,
       });
-      const data = await res.json();
-      const texte = data.content?.[0]?.text || '{}';
-      const clean = texte.replace(/```json|```/g, '').trim();
-      const feedback = JSON.parse(clean);
-      setFeedbackIA(feedback);
+      setFeedbackIA(data);
     } catch {
       toast.error("Erreur lors de l'analyse IA");
       setOnglet('debat');
     } finally {
       setAnalyseEnCours(false);
+    }
+  };
+
+  const voterDebat = async (type: 'POUR' | 'CONTRE') => {
+    if (!utilisateur) { toast.error('Connectez-vous pour voter'); return; }
+    try {
+      await api.post('/votes', { type, debatId: id });
+      // Recharger les stats du débat
+      const { data } = await api.get(`/votes/debat/${id}`);
+      if (data) {
+        setDebat((prev: any) => prev ? { ...prev, votes: data } : prev);
+      }
+      toast.success('Vote enregistré');
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || 'Erreur lors du vote');
     }
   };
 
@@ -165,17 +171,17 @@ Sois encourageant mais honnête. Réponds en français.`;
   );
 
   return (
-    <div style={{ maxWidth: '780px', margin: '0 auto', padding: '32px 24px' }}>
+    <div className="dh-debate-detail">
 
       {/* En-tête débat */}
-      <div style={{ background: 'white', borderRadius: '20px', border: '1px solid #E5E7EB', boxShadow: '0 1px 4px rgba(0,0,0,0.06)', padding: '24px', marginBottom: '20px' }}>
+      <div className="dh-debate-header">
         <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '100px', fontWeight: 700, background: debat.statut === 'OUVERT' ? '#D1FAE5' : '#F3F4F6', color: debat.statut === 'OUVERT' ? '#065F46' : '#6B7280' }}>
             {debat.statut === 'OUVERT' ? '💬 OUVERT' : '🔒 ' + debat.statut}
           </span>
           {debat.categorie && <span style={{ fontSize: '12px', background: '#EFF6FF', color: '#1D4ED8', padding: '4px 10px', borderRadius: '100px', fontWeight: 600 }}>{debat.categorie}</span>}
         </div>
-        <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#111827', margin: '0 0 8px 0' }}>{debat.titre}</h1>
+        <h1 className="dh-debate-q">{debat.titre}</h1>
         <p style={{ color: '#6B7280', fontSize: '14px', margin: '0 0 12px 0' }}>{debat.description}</p>
         {debat.createur && <p style={{ fontSize: '12px', color: '#9CA3AF' }}>Par <strong style={{ color: '#6B7280' }}>{debat.createur.prenom} {debat.createur.nom}</strong> · {debat.createur.role}</p>}
         <div style={{ display: 'flex', gap: '16px', marginTop: '12px', fontSize: '12px', color: '#9CA3AF' }}>
@@ -186,13 +192,13 @@ Sois encourageant mais honnête. Réponds en français.`;
       </div>
 
       {/* Onglets */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-        {[['debat', '💬 Débat'], ['feedback', '🤖 Feedback IA']].map(([val, label]) => (
-          <button key={val} onClick={() => setOnglet(val as any)} style={{ padding: '8px 20px', borderRadius: '10px', border: 'none', fontWeight: 700, fontSize: '14px', cursor: 'pointer', background: onglet === val ? '#1e3a5f' : '#F3F4F6', color: onglet === val ? 'white' : '#6B7280' }}>
+      <div style={{ display:'flex', gap:'0', borderBottom:'1px solid var(--line2)', marginBottom:'24px' }}>
+        {[['debat', 'Débat'], ['feedback', 'Feedback IA']].map(([val, label]) => (
+          <button key={val} onClick={() => setOnglet(val as any)} className="dh-filter-tab" style={{ fontSize:'10px' , ...(onglet===val ? { color:'var(--ink)', borderBottomColor:'var(--ink)' } : {}) }}>
             {label}
           </button>
         ))}
-        {analyseEnCours && <span style={{ fontSize: '13px', color: '#7B61FF', display: 'flex', alignItems: 'center', gap: '6px' }}>⏳ Analyse en cours...</span>}
+        {analyseEnCours && <span style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:'11px', color:'var(--muted)', display:'flex', alignItems:'center', padding:'0 16px' }}>Analyse en cours...</span>}
       </div>
 
       {/* ONGLET DÉBAT */}

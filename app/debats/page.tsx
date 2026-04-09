@@ -201,15 +201,15 @@ export default function PageDebats() {
   // ===== VUE ADMIN =====
   if (estAdmin) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div style={{ maxWidth:"1100px", margin:"0 auto", padding:"48px 40px" }}>
 
-        <div className="flex justify-between items-center mb-8">
+        <div className="dh-page-header">
           <div>
-            <h1 className="text-2xl font-bold text-blue-900">Gestion des débats</h1>
-            <p className="text-gray-500 text-sm mt-1">{debats.length} débat(s) au total</p>
+            <h1 className="dh-page-title">Gestion des débats</h1>
+            <p style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:"12px", color:"var(--muted)" }}>{debats.length} débat(s) au total</p>
           </div>
-          <button onClick={ouvrirCreation} className="bg-yellow-400 text-yellow-900 px-5 py-2 rounded-lg font-bold hover:bg-yellow-300 transition text-sm">
-            + Nouveau débat
+          <button onClick={ouvrirCreation} className="dh-btn" style={{ fontSize:"10px" }}>
+            Nouveau débat
           </button>
         </div>
 
@@ -337,12 +337,12 @@ export default function PageDebats() {
 
   // ===== VUE PUBLIQUE =====
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="dh-debates-page">
 
-      <div className="flex justify-between items-center mb-6">
+      <div className="dh-page-header">
         <div>
-          <h1 className="text-2xl font-bold text-blue-900">💬 Débats</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 className="dh-page-title">Débats</h1>
+          <p style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:"12px", color:"var(--muted)" }}>
             {debatsOuverts.length} ouvert{debatsOuverts.length > 1 ? 's' : ''} · {debatsProgrammes.length} programmé{debatsProgrammes.length > 1 ? 's' : ''}
           </p>
         </div>
@@ -368,10 +368,10 @@ export default function PageDebats() {
       {/* Section Débats ouverts */}
       {debatsOuverts.filter(d => filtre === 'tous' || filtre === 'ouverts' || d.categorie === filtre).length > 0 && (
         <div className="mb-10">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-3 h-3 rounded-full bg-green-500 animate-pulse inline-block" />
-            <h2 className="text-lg font-bold text-gray-900">Débats ouverts</h2>
-            <span className="text-sm text-gray-400">
+          <div style={{ display:"flex", alignItems:"center", gap:"8px", marginBottom:"16px" }}>
+            <span className="dh-live-dot" />
+            <h2 style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:"11px", letterSpacing:".08em", textTransform:"uppercase", color:"var(--ink)" }}>Débats ouverts</h2>
+            <span style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:"11px", color:"var(--muted)" }}>
               ({debatsOuverts.filter(d => filtre === 'tous' || filtre === 'ouverts' || d.categorie === filtre).length})
             </span>
           </div>
@@ -458,11 +458,13 @@ export default function PageDebats() {
 
       {/* CTA visiteurs */}
       {!estConnecte && (
-        <div className="mt-12 bg-blue-50 rounded-2xl p-8 text-center">
-          <h2 className="text-xl font-bold text-blue-900 mb-2">Rejoignez la communauté</h2>
-          <p className="text-gray-600 mb-4">Inscrivez-vous pour participer aux débats et soumettre vos arguments</p>
-          <Link href="/auth/inscription" className="inline-block bg-blue-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-800 transition">
-            Créer un compte gratuitement
+        <div style={{ marginTop:"40px", padding:"40px", background:"var(--ink)", textAlign:"center" }}>
+          <h2 style={{ fontFamily:"Georgia,serif", fontSize:"22px", fontWeight:"normal", color:"var(--page)", marginBottom:"10px" }}>Rejoignez la communauté</h2>
+          <p style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:"13px", color:"rgba(244,240,233,0.5)", marginBottom:"24px", lineHeight:"1.6" }}>
+            Inscrivez-vous pour participer aux débats et soumettre vos arguments
+          </p>
+          <Link href="/auth/inscription" className="dh-btn dh-btn-inv">
+            Créer un compte
           </Link>
         </div>
       )}

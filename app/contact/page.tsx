@@ -26,7 +26,7 @@ export default function PageContact() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="dh-simple-page">
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-blue-900 mb-2">Nous contacter</h1>
         <p className="text-gray-500">Nous sommes là pour vous aider</p>

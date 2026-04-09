@@ -15,7 +15,7 @@ interface Props {
 
 export default function CarteDebat({ debat }: Props) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition">
+    <div className="bg-white   border border-gray-100 p-5 hover: transition">
       <div className="flex justify-between items-start">
         <div className="flex-1">
           <span className={`text-xs px-2 py-1 rounded font-medium ${

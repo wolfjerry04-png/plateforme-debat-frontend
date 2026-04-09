@@ -934,17 +934,17 @@ export default function PageFormations() {
 
   // ===== VUE LISTE =====
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
+    <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
+      <div className="dh-page-header" style={{ padding:"48px 40px 20px", margin:"0" }}>
         <div>
-          <h1 className="text-2xl font-bold text-blue-900">📚 Formations</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            {formationsFiltrees.length} formation{formationsFiltrees.length > 1 ? 's' : ''} · Résumés accessibles à tous · Support IA inclus
+          <h1 className="dh-page-title">Formations</h1>
+          <p style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:"12px", color:"var(--muted)" }}>
+            {formationsFiltrees.length} formation{formationsFiltrees.length > 1 ? 's' : ''} · Support IA inclus
           </p>
         </div>
         {estAdmin && (
-          <button onClick={ouvrirCreation} className="bg-yellow-400 text-yellow-900 px-5 py-2 rounded-lg font-bold hover:bg-yellow-300 transition text-sm">
-            + Nouveau cours
+          <button onClick={ouvrirCreation} className="dh-btn" style={{ fontSize:"10px" }}>
+            Nouveau cours
           </button>
         )}
       </div>
@@ -1049,11 +1049,15 @@ export default function PageFormations() {
       )}
 
       {!estConnecte && (
-        <div className="mt-12 bg-blue-50 rounded-2xl p-8 text-center">
-          <h2 className="text-xl font-bold text-blue-900 mb-2">Accédez à toutes les formations</h2>
-          <p className="text-gray-600 mb-4">Créez un compte gratuit pour commencer et recevoir un support IA personnalisé.</p>
-          <a href="/auth/inscription" className="inline-block bg-blue-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-800 transition">
-            Créer un compte gratuitement
+        <div style={{ padding:"48px 40px", background:"var(--ink)", textAlign:"center" }}>
+          <h2 style={{ fontFamily:"Georgia,serif", fontSize:"22px", fontWeight:"normal", color:"var(--page)", marginBottom:"10px" }}>
+            Accédez à toutes les formations
+          </h2>
+          <p style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:"13px", color:"rgba(244,240,233,0.5)", marginBottom:"24px", lineHeight:"1.6" }}>
+            Créez un compte gratuit pour commencer et recevoir un support IA personnalisé.
+          </p>
+          <a href="/auth/inscription" className="dh-btn dh-btn-inv">
+            Créer un compte
           </a>
         </div>
       )}

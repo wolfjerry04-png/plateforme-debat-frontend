@@ -333,7 +333,7 @@ export default function PageTournois() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <div style={{ maxWidth:"1100px", margin:"0 auto" }}>
 
       {/* Message succès */}
       {messageSucces && (
@@ -376,22 +376,35 @@ export default function PageTournois() {
       </div>
 
       {/* En-tête */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="dh-tourn-hero">
         <div>
-          <h1 className="text-2xl font-bold text-blue-900">🏆 Tournois de débat</h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Calendrier et matchs gérés automatiquement par l'IA Claude
-          </p>
+          <div style={{ fontFamily:"'Helvetica Neue',Arial,sans-serif", fontSize:"10px", letterSpacing:".12em", textTransform:"uppercase", color:"rgba(244,240,233,.3)", marginBottom:"16px" }}>
+            Saison 2026
+          </div>
+          <h1 className="dh-tourn-title">Tournois<br />de débat</h1>
+          <div className="dh-tourn-sub">Calendrier et matchs gérés par l'IA Claude</div>
+          <div className="dh-tourn-stats">
+            <div>
+              <div className="dh-tourn-stat-n">{tournois.length}</div>
+              <div className="dh-tourn-stat-l">Tournois</div>
+            </div>
+            <div>
+              <div className="dh-tourn-stat-n">{enCours.length > 0 ? enCours[0]._count?.equipes || 0 : 0}</div>
+              <div className="dh-tourn-stat-l">Équipes actives</div>
+            </div>
+          </div>
         </div>
         {estAdmin && (
           <button
             onClick={() => { setTournoiEdition(null); setFormTournoi(FORM_TOURNOI_VIDE); setModalTournoi(true); }}
-            className="bg-yellow-400 text-yellow-900 px-5 py-2 rounded-lg font-bold hover:bg-yellow-300 transition text-sm"
+            className="dh-btn dh-btn-inv"
+            style={{ fontSize:"9px" }}
           >
-            + Nouveau tournoi
+            Nouveau tournoi
           </button>
         )}
       </div>
+      <div style={{ padding:"40px" }}>
 
       {/* Tournois en cours */}
       {enCours.length > 0 && (
@@ -440,9 +453,10 @@ export default function PageTournois() {
         </div>
       )}
 
+      </div>
       {/* Classement */}
       <div id="classement" className="mt-12">
-        <h2 className="text-xl font-bold text-blue-900 mb-6">🏅 Classement général — Saison 2026</h2>
+        <h2 style={{ fontFamily:"Georgia,serif", fontSize:"24px", fontWeight:"normal", letterSpacing:"-.015em", marginBottom:"24px", padding:"40px 40px 0" }}>Classement — Saison 2026</h2>
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-blue-900 text-white">

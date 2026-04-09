@@ -5,88 +5,86 @@ import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 import api from '@/lib/api';
 
-function HeroVisual() {
+/* ── Vase de Rubin SVG ── */
+function RubinVase() {
   return (
-    <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-      <defs>
-        <radialGradient id="glowGold" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#FFD700" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#FFD700" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id="globeGrad" cx="35%" cy="35%" r="65%">
-          <stop offset="0%" stopColor="#1a4a8a" />
-          <stop offset="50%" stopColor="#0d2f6e" />
-          <stop offset="100%" stopColor="#061a4a" />
-        </radialGradient>
-        <radialGradient id="continentGrad" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#3EB489" />
-          <stop offset="100%" stopColor="#2a8a6a" />
-        </radialGradient>
-        <linearGradient id="handClaire" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#F5CBA7" /><stop offset="100%" stopColor="#E8A87C" />
-        </linearGradient>
-        <linearGradient id="handMoyenne" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#C68642" /><stop offset="100%" stopColor="#A0522D" />
-        </linearGradient>
-        <linearGradient id="handFoncee" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#6B3A2A" /><stop offset="100%" stopColor="#4A2518" />
-        </linearGradient>
-        <clipPath id="globeClip"><circle cx="140" cy="115" r="88" /></clipPath>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-          <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
-      </defs>
-      <circle cx="140" cy="115" r="110" fill="url(#glowGold)" />
-      <circle cx="140" cy="115" r="88" fill="url(#globeGrad)" filter="url(#glow)" />
-      <g clipPath="url(#globeClip)" opacity="0.3">
-        {[95,115,135].map(y => <line key={y} x1="52" y1={y} x2="228" y2={y} stroke="#4a90d9" strokeWidth="0.5" />)}
-        {[100,140,180].map(x => <line key={x} x1={x} y1="27" x2={x} y2="203" stroke="#4a90d9" strokeWidth="0.5" />)}
-      </g>
-      <g clipPath="url(#globeClip)">
-        <path d="M80 70 L105 65 L115 80 L110 100 L95 110 L80 105 L72 90 Z" fill="url(#continentGrad)" opacity="0.9" />
-        <path d="M95 115 L115 118 L120 140 L108 160 L90 155 L82 135 Z" fill="url(#continentGrad)" opacity="0.9" />
-        <circle cx="100" cy="100" r="4" fill="#FFD700" opacity="0.9" />
-        <circle cx="100" cy="100" r="7" fill="#FFD700" opacity="0.3" />
-        <path d="M140 65 L165 62 L170 78 L158 85 L143 82 Z" fill="url(#continentGrad)" opacity="0.9" />
-        <path d="M148 90 L172 88 L178 115 L170 140 L152 145 L140 130 L138 108 Z" fill="url(#continentGrad)" opacity="0.9" />
-        <path d="M175 68 L210 65 L215 90 L200 100 L185 95 L175 82 Z" fill="url(#continentGrad)" opacity="0.9" />
-      </g>
-      <circle cx="140" cy="115" r="88" fill="none" stroke="rgba(0,212,255,0.6)" strokeWidth="1.5" />
-      <ellipse cx="115" cy="85" rx="25" ry="15" fill="rgba(255,255,255,0.08)" transform="rotate(-30 115 85)" />
-      <g transform="translate(30, 165)">
-        <path d="M0 50 C0 35 5 25 15 20 L35 18 C42 18 48 22 48 32 L48 55 C48 68 42 75 30 75 L18 75 C8 75 0 68 0 58 Z" fill="url(#handClaire)" />
-        <rect x="8" y="2" width="9" height="22" rx="4" fill="url(#handClaire)" />
-        <rect x="19" y="0" width="9" height="24" rx="4" fill="url(#handClaire)" />
-        <rect x="30" y="2" width="9" height="22" rx="4" fill="url(#handClaire)" />
-        <rect x="40" y="6" width="8" height="18" rx="4" fill="url(#handClaire)" />
-      </g>
-      <g transform="translate(198, 165) scale(-1,1) translate(-50,0)">
-        <path d="M0 50 C0 35 5 25 15 20 L35 18 C42 18 48 22 48 32 L48 55 C48 68 42 75 30 75 L18 75 C8 75 0 68 0 58 Z" fill="url(#handFoncee)" />
-        <rect x="8" y="2" width="9" height="22" rx="4" fill="url(#handFoncee)" />
-        <rect x="19" y="0" width="9" height="24" rx="4" fill="url(#handFoncee)" />
-        <rect x="30" y="2" width="9" height="22" rx="4" fill="url(#handFoncee)" />
-        <rect x="40" y="6" width="8" height="18" rx="4" fill="url(#handFoncee)" />
-      </g>
-      <g transform="translate(108, 175)">
-        <path d="M0 45 C0 30 6 20 18 16 L46 16 C56 16 64 22 64 34 L64 52 C64 66 56 74 44 74 L20 74 C8 74 0 66 0 54 Z" fill="url(#handMoyenne)" />
-        <rect x="8" y="0" width="11" height="20" rx="5" fill="url(#handMoyenne)" />
-        <rect x="21" y="-2" width="11" height="22" rx="5" fill="url(#handMoyenne)" />
-        <rect x="34" y="0" width="11" height="20" rx="5" fill="url(#handMoyenne)" />
-        <rect x="47" y="4" width="10" height="16" rx="5" fill="url(#handMoyenne)" />
-      </g>
-      {[[20,30],[250,20],[265,80],[15,160],[255,170],[130,10]].map(([x,y],i) => (
-        <circle key={i} cx={x} cy={y} r="1.5" fill="white" opacity={0.4 + (i%3)*0.2} />
-      ))}
+    <svg
+      viewBox="0 0 320 400"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ width: '100%', maxWidth: '300px' }}
+      aria-label="Illusion du vase de Rubin — deux visages ou un vase"
+    >
+      {/* Profil gauche */}
+      <path
+        d="M0 0 L160 0
+           C148 22,132 32,118 44
+           C108 53,100 62,96 72
+           C90 84,90 96,96 106
+           C104 118,116 124,122 132
+           C132 144,134 156,128 170
+           C122 182,112 190,106 200
+           C98 212,96 222,100 232
+           C105 244,116 252,126 262
+           C136 272,144 282,146 294
+           C148 306,146 320,140 332
+           C134 344,126 352,122 358
+           C116 366,116 374,122 380
+           C130 388,144 392,160 392
+           L0 392 Z"
+        fill="#F4F0E9"
+      />
+      {/* Profil droit */}
+      <path
+        d="M320 0 L160 0
+           C172 22,188 32,202 44
+           C212 53,220 62,224 72
+           C230 84,230 96,224 106
+           C216 118,204 124,198 132
+           C188 144,186 156,192 170
+           C198 182,208 190,214 200
+           C222 212,224 222,220 232
+           C215 244,204 252,194 262
+           C184 272,176 282,174 294
+           C172 306,174 320,180 332
+           C186 344,194 352,198 358
+           C204 366,204 374,198 380
+           C190 388,176 392,160 392
+           L320 392 Z"
+        fill="#F4F0E9"
+      />
+      {/* Axe de symétrie */}
+      <line x1="160" y1="40" x2="160" y2="360" stroke="#F4F0E9" strokeWidth="0.5" strokeOpacity="0.2" strokeDasharray="4 6" />
     </svg>
+  );
+}
+
+/* ── Mini carte débat live ── */
+function LiveDebatCard({ titre, pour, contre, total }: { titre: string; pour: number; contre: number; total: number }) {
+  return (
+    <div style={{ padding: '16px 0', borderBottom: '1px solid rgba(17,20,24,0.12)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+        <span className="dh-live-dot" />
+        <span style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: '9px', letterSpacing: '.09em', textTransform: 'uppercase', color: 'var(--red)' }}>En direct</span>
+      </div>
+      <p style={{ fontFamily: 'Georgia,serif', fontSize: '14px', lineHeight: '1.4', marginBottom: '12px' }}>{titre}</p>
+      <div style={{ height: '2px', background: 'var(--line2)', position: 'relative', overflow: 'hidden', marginBottom: '6px' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${pour}%`, background: 'var(--ink)' }} />
+        <div style={{ position: 'absolute', top: 0, right: 0, height: '100%', width: `${contre}%`, background: 'var(--red)' }} />
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: '11px', color: 'var(--muted)' }}>
+        <span>Pour — {pour}%</span>
+        <span style={{ color: 'var(--red)' }}>Contre — {contre}%</span>
+      </div>
+    </div>
   );
 }
 
 export default function PageAccueil() {
   const { estConnecte } = useAuthStore();
-  const [sponsors, setSponsors] = useState<any[]>([]);
+  const [sponsors, setSponsors]   = useState<any[]>([]);
   const [sponsorIdx, setSponsorIdx] = useState(0);
-  const [sponsorVisible, setSponsorVisible] = useState(true);
+  const [sponsorVis, setSponsorVis] = useState(true);
 
   useEffect(() => {
     api.get('/sponsoring/sponsors')
@@ -97,8 +95,8 @@ export default function PageAccueil() {
   useEffect(() => {
     if (sponsors.length < 2) return;
     const t = setTimeout(() => {
-      setSponsorVisible(false);
-      setTimeout(() => { setSponsorIdx(i => (i + 1) % sponsors.length); setSponsorVisible(true); }, 400);
+      setSponsorVis(false);
+      setTimeout(() => { setSponsorIdx(i => (i + 1) % sponsors.length); setSponsorVis(true); }, 400);
     }, 4000);
     return () => clearTimeout(t);
   }, [sponsorIdx, sponsors]);
@@ -106,322 +104,162 @@ export default function PageAccueil() {
   const sponsor = sponsors[sponsorIdx];
 
   return (
-    <div style={{ background: '#0A0F1E', minHeight: '100vh', color: 'white', overflowX: 'hidden' }}>
-      <style>{`
-        @keyframes floatGlobe { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-        @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
-        .globe-float { animation: floatGlobe 4s ease-in-out infinite; }
-        .anim-1 { animation: fadeUp 0.7s ease both; }
-        .anim-2 { animation: fadeUp 0.7s ease 0.1s both; }
-        .anim-3 { animation: fadeUp 0.7s ease 0.2s both; }
-        .anim-4 { animation: fadeUp 0.7s ease 0.35s both; }
-        .shimmer-text {
-          background: linear-gradient(90deg,#00D4FF,#7B61FF,#00D4FF);
-          background-size: 200% auto;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: shimmer 3s linear infinite;
-        }
-
-        /* ── HERO LAYOUT ── */
-        .hero-wrap {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 72px 48px 64px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 56px;
-          box-sizing: border-box;
-          width: 100%;
-        }
-        .hero-text  { flex: 1; min-width: 0; }
-        .hero-right { flex: 0 0 300px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .hero-globe { width: 240px; height: 240px; }
-        .hero-cards { display: flex; gap: 12px; width: 100%; }
-        .hero-card  { flex: 1; min-width: 0; }
-
-        .stats-row { display: flex; gap: 40px; }
-        .btn-row   { display: flex; gap: 14px; flex-wrap: wrap; }
-
-        /* ── RÔLES GRID ── */
-        .roles-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 20px;
-        }
-
-        /* ── TABLET ── */
-        @media (max-width: 900px) {
-          .hero-wrap {
-            flex-direction: column;
-            padding: 48px 24px 56px;
-            gap: 40px;
-            text-align: center;
-          }
-          .hero-text  { width: 100%; }
-          .hero-right { flex: none; width: 100%; }
-          .hero-globe { width: 200px; height: 200px; }
-          .stats-row  { justify-content: center; gap: 28px; }
-          .btn-row    { justify-content: center; }
-          .roles-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        /* ── MOBILE ── */
-        @media (max-width: 480px) {
-          .hero-wrap  { padding: 36px 16px 48px; gap: 32px; }
-          .hero-globe { width: 160px; height: 160px; }
-          .hero-cards { flex-direction: column; }
-          .hero-card  { width: 100%; }
-          .stats-row  { gap: 16px; }
-          .roles-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-          .btn-row    { flex-direction: column; align-items: center; }
-          .btn-row a  { width: 100%; text-align: center; box-sizing: border-box; }
-        }
-      `}</style>
-
+    <div>
       {/* ══════════════ HERO ══════════════ */}
-      <section style={{
-        background: 'linear-gradient(135deg,#0A2540 0%,#001F3F 55%,#0A0F1E 100%)',
-        position: 'relative', overflow: 'hidden',
-      }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 50%,rgba(0,212,255,0.07) 0%,transparent 60%)' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 75% 30%,rgba(123,97,255,0.06) 0%,transparent 55%)' }} />
+      <section className="dh-hero">
 
-        <div className="hero-wrap" style={{ position: 'relative', zIndex: 1 }}>
+        {/* ── Gauche : Manifeste ── */}
+        <div className="dh-hero-left">
+          <div className="dh-eyebrow">Le débat comme discipline de l'esprit</div>
+          <h1 className="dh-hero-h1">
+            Une idée ne tient<br />
+            que <em>confrontée</em><br />
+            à son contraire.
+          </h1>
+          <p className="dh-hero-body">
+            Debat Haiti est un espace de délibération ouvert sur les grandes questions.
+            Chaque position engage une réfutation. Chaque argument cherche son adversaire.
+          </p>
+          <div className="dh-hero-cta">
+            {estConnecte ? (
+              <Link href="/debats" className="dh-btn">Explorer les débats</Link>
+            ) : (
+              <>
+                <Link href="/auth/inscription" className="dh-btn">Rejoindre</Link>
+                <Link href="/auth/connexion"   className="dh-btn dh-btn-outline">Se connecter</Link>
+              </>
+            )}
+          </div>
+        </div>
 
-          {/* ── Texte gauche ── */}
-          <div className="hero-text">
-            <div className="anim-1" style={{
-              display: 'inline-flex', alignItems: 'center', gap: '8px',
-              background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.2)',
-              borderRadius: '100px', padding: '6px 16px', marginBottom: '20px',
-              fontSize: '12px', color: '#00D4FF', letterSpacing: '1px', textTransform: 'uppercase',
-            }}>
-              🇭🇹 Plateforme nationale du débat
-            </div>
+        {/* ── Centre : Vase de Rubin ── */}
+        <div className="dh-hero-center">
+          <RubinVase />
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', maxWidth: '280px', marginTop: '24px' }}>
+            <span style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: '10px', letterSpacing: '.10em', textTransform: 'uppercase', color: 'rgba(244,240,233,0.35)' }}>Le vase</span>
+            <span style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: '10px', letterSpacing: '.10em', textTransform: 'uppercase', color: 'rgba(244,240,233,0.35)' }}>Les visages</span>
+          </div>
+          <p style={{ fontFamily: 'Georgia,serif', fontStyle: 'italic', fontSize: '12px', color: 'rgba(244,240,233,0.32)', marginTop: '16px', textAlign: 'center', letterSpacing: '0.03em' }}>
+            Deux lectures. Une seule vérité.
+          </p>
+        </div>
 
-            <h1 className="anim-2" style={{
-              fontSize: 'clamp(28px,4.5vw,56px)', fontWeight: 800,
-              lineHeight: 1.1, margin: '0 0 18px',
-            }}>
-              <span style={{ color: 'white' }}>Formez-vous à </span>
-              <span className="shimmer-text">l'art du débat</span>
-              <br />
-              <span style={{ color: 'white' }}>en Haïti</span>
-            </h1>
+        {/* ── Droite : Débat live + partenaire ── */}
+        <div className="dh-hero-right">
+          <LiveDebatCard
+            titre="La réforme de la Constitution haïtienne est-elle nécessaire ?"
+            pour={63}
+            contre={37}
+            total={142}
+          />
+          <LiveDebatCard
+            titre="L'économie informelle : frein ou moteur pour Haïti ?"
+            pour={44}
+            contre={56}
+            total={89}
+          />
+          <div style={{ paddingTop: '20px' }}>
+            <Link href="/debats" className="dh-btn" style={{ width: '100%', justifyContent: 'center', fontSize: '10px' }}>
+              Voir tous les débats
+            </Link>
+          </div>
 
-            <p className="anim-3" style={{
-              fontSize: 'clamp(14px,1.8vw,17px)',
-              color: 'rgba(255,255,255,0.65)', lineHeight: 1.75,
-              margin: '0 0 32px', maxWidth: '460px',
-            }}>
-              Participez aux compétitions, développez votre pensée critique et rejoignez la communauté des débatteurs haïtiens.
-            </p>
-
-            <div className="anim-3 btn-row" style={{ marginBottom: '36px' }}>
-              {estConnecte ? (
-                <Link href="/debats" style={{
-                  background: 'linear-gradient(135deg,#00D4FF,#7B61FF)', color: 'white',
-                  padding: '14px 32px', borderRadius: '12px', fontWeight: 700,
-                  fontSize: '15px', textDecoration: 'none',
-                  boxShadow: '0 6px 24px rgba(0,212,255,0.25)',
-                }}>
-                  Voir les débats →
-                </Link>
+          {/* Partenaire */}
+          {(sponsor || true) && (
+            <div style={{ marginTop: '28px', paddingTop: '20px', borderTop: '1px solid var(--line2)' }}>
+              <div style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: '9px', letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '10px' }}>
+                Partenaire
+              </div>
+              {sponsor ? (
+                <div style={{ transition: 'opacity 0.4s', opacity: sponsorVis ? 1 : 0 }}>
+                  {sponsor.logoUrl && !sponsor.logoUrl.startsWith('#') ? (
+                    <img src={sponsor.logoUrl} alt={sponsor.nom} style={{ height: '28px', maxWidth: '120px', objectFit: 'contain', filter: 'brightness(0)', opacity: '.6' }} />
+                  ) : (
+                    <span style={{ fontFamily: 'Georgia,serif', fontSize: '14px', color: 'var(--ink)' }}>{sponsor.nom}</span>
+                  )}
+                </div>
               ) : (
-                <>
-                  <Link href="/auth/inscription" style={{
-                    background: 'linear-gradient(135deg,#00D4FF,#7B61FF)', color: 'white',
-                    padding: '14px 32px', borderRadius: '12px', fontWeight: 700,
-                    fontSize: '15px', textDecoration: 'none',
-                    boxShadow: '0 6px 24px rgba(0,212,255,0.25)',
-                  }}>
-                    Commencer gratuitement
-                  </Link>
-                  <Link href="/auth/connexion" style={{
-                    background: 'rgba(255,255,255,0.07)',
-                    border: '1px solid rgba(255,255,255,0.18)',
-                    color: 'white', padding: '14px 28px', borderRadius: '12px',
-                    fontWeight: 600, fontSize: '15px', textDecoration: 'none',
-                  }}>
-                    Se connecter
-                  </Link>
-                </>
+                <Link href="/contact" style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: '11px', color: 'var(--muted)', textDecoration: 'none' }}>
+                  Devenir partenaire
+                </Link>
               )}
             </div>
+          )}
+        </div>
 
-            {/* Stats */}
-            <div className="anim-4 stats-row" style={{
-              paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)',
-            }}>
-              {[['500+','Débatteurs'],['50+','Formations'],['20+','Tournois']].map(([n,l]) => (
-                <div key={l} style={{ textAlign: 'center' }}>
-                  <div style={{
-                    fontSize: 'clamp(20px,2.5vw,30px)', fontWeight: 800,
-                    background: 'linear-gradient(90deg,#00D4FF,#7B61FF)',
-                    WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                  }}>{n}</div>
-                  <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', marginTop: '3px' }}>{l}</div>
-                </div>
-              ))}
+        {/* ── Stats bas gauche ── */}
+        <div className="dh-hero-stats">
+          {[['500+', 'Débatteurs'], ['50+', 'Formations'], ['20+', 'Tournois']].map(([n, l]) => (
+            <div key={l}>
+              <div className="dh-stat-num">{n}</div>
+              <div className="dh-stat-lbl">{l}</div>
             </div>
-          </div>
-
-          {/* ── Visuel droit ── */}
-          <div className="hero-right">
-            <div className="globe-float hero-globe" style={{
-              filter: 'drop-shadow(0 0 30px rgba(255,215,0,0.15)) drop-shadow(0 0 60px rgba(0,212,255,0.12))',
-            }}>
-              <HeroVisual />
-            </div>
-
-            <div className="hero-cards">
-              {/* Carte partenaire */}
-              <div className="hero-card" style={{
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,215,0,0.18)',
-                borderRadius: '16px', padding: '16px 12px',
-                display: 'flex', flexDirection: 'column',
-                alignItems: 'center', gap: '8px',
-                backdropFilter: 'blur(10px)',
-              }}>
-                <p style={{ fontSize: '9px', color: 'rgba(255,255,255,0.28)', letterSpacing: '2px', textTransform: 'uppercase', margin: 0 }}>
-                  Partenaire
-                </p>
-                {sponsor ? (
-                  <div style={{ transition: 'opacity 0.4s', opacity: sponsorVisible ? 1 : 0, textAlign: 'center', width: '100%' }}>
-                    {sponsor.logoUrl && !sponsor.logoUrl.startsWith('#') ? (
-                      <img src={sponsor.logoUrl} alt={sponsor.nom}
-                        style={{ height: '30px', maxWidth: '100px', objectFit: 'contain', filter: 'brightness(0) invert(1)', margin: '0 auto', display: 'block' }} />
-                    ) : (
-                      <div style={{ fontSize: '11px', fontWeight: 700, color: 'white', background: 'rgba(255,255,255,0.08)', borderRadius: '8px', padding: '5px 8px' }}>
-                        {sponsor.nom}
-                      </div>
-                    )}
-                    {sponsors.length > 1 && (
-                      <div style={{ display: 'flex', gap: '3px', justifyContent: 'center', marginTop: '8px' }}>
-                        {sponsors.map((_, i) => (
-                          <div key={i} style={{
-                            width: i === sponsorIdx ? '14px' : '5px', height: '3px',
-                            borderRadius: '2px', transition: 'all 0.3s',
-                            background: i === sponsorIdx ? '#FFD700' : 'rgba(255,255,255,0.2)',
-                          }} />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>Digicel Haïti</div>
-                )}
-                <Link href="/contact" style={{ fontSize: '9px', color: 'rgba(255,215,0,0.55)', textDecoration: 'none' }}>
-                  Devenir partenaire →
-                </Link>
-              </div>
-
-              {/* Carte stats live */}
-              <div className="hero-card" style={{
-                background: 'rgba(0,212,255,0.05)',
-                border: '1px solid rgba(0,212,255,0.12)',
-                borderRadius: '16px', padding: '16px 12px',
-                backdropFilter: 'blur(10px)',
-              }}>
-                <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.35)', marginBottom: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', textAlign: 'center' }}>
-                  Aujourd'hui
-                </div>
-                {[['💬','3 débats actifs'],['👥','127 en ligne'],['🏆','2 tournois']].map(([emoji,txt]) => (
-                  <div key={txt} style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '8px', fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>
-                    <span>{emoji}</span><span>{txt}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* ══════════════ RÔLES ══════════════ */}
-      <section style={{ padding: 'clamp(48px,8vw,80px) clamp(16px,4vw,48px)', background: '#0D1421' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <h2 style={{
-            fontSize: 'clamp(22px,3vw,36px)', fontWeight: 800,
-            textAlign: 'center', marginBottom: 'clamp(28px,5vw,48px)', color: 'white',
-          }}>
-            Une plateforme pour tous
-          </h2>
-          <div className="roles-grid">
+      {/* ══════════════ SECTION RÔLES ══════════════ */}
+      <section style={{ padding: '72px 40px', borderTop: '1px solid var(--line2)' }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          <div style={{ marginBottom: '48px', paddingBottom: '20px', borderBottom: '1px solid var(--line2)', display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+            <h2 style={{ fontFamily: 'Georgia,serif', fontSize: '28px', fontWeight: 'normal', letterSpacing: '-.015em' }}>
+              Une plateforme pour chaque rôle
+            </h2>
+            {!estConnecte && (
+              <Link href="/auth/inscription" className="dh-btn" style={{ fontSize: '10px' }}>Créer un compte</Link>
+            )}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1px', background: 'var(--line2)' }}>
             {[
-              { emoji: '⚙️',  role: 'Admin',      desc: 'Gère la plateforme',        couleur: '#7B61FF' },
-              { emoji: '👨‍🏫', role: 'Formateur',  desc: 'Crée et anime les débats',  couleur: '#00D4FF' },
-              { emoji: '🎓', role: 'Apprenant',   desc: 'Participe et vote',          couleur: '#3EB489' },
-              { emoji: '👁️', role: 'Spectateur',  desc: 'Observe en direct',          couleur: '#FF9F68' },
-            ].map(item => (
-              <div key={item.role} style={{
-                background: item.couleur + '0f',
-                border: '1px solid ' + item.couleur + '28',
-                borderRadius: '20px',
-                padding: 'clamp(20px,3vw,32px)',
-                textAlign: 'center',
-              }}>
-                <div style={{ fontSize: 'clamp(28px,4vw,42px)', marginBottom: '12px' }}>{item.emoji}</div>
-                <h3 style={{ fontSize: 'clamp(14px,1.8vw,18px)', fontWeight: 700, color: item.couleur, marginBottom: '6px', margin: '0 0 6px' }}>
-                  {item.role}
-                </h3>
-                <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px', margin: 0 }}>{item.desc}</p>
+              { role: 'Admin',      desc: 'Gère la plateforme, les tournois et les utilisateurs.', accent: 'var(--blue)' },
+              { role: 'Formateur',  desc: 'Crée les débats, anime les sessions et suit les apprenants.', accent: 'var(--ink)' },
+              { role: 'Apprenant',  desc: 'Participe aux débats, vote et accède aux formations.', accent: 'var(--green)' },
+              { role: 'Spectateur', desc: 'Observe les débats en direct sans prise de position.', accent: 'var(--red)' },
+            ].map(({ role, desc, accent }) => (
+              <div key={role} style={{ background: 'var(--page)', padding: '32px 28px' }}>
+                <div style={{ width: '28px', height: '3px', background: accent, marginBottom: '16px' }} />
+                <div style={{ fontFamily: 'Georgia,serif', fontSize: '18px', marginBottom: '10px' }}>{role}</div>
+                <div style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: '12px', color: 'var(--muted)', lineHeight: '1.6' }}>{desc}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══════════════ CTA ══════════════ */}
-      <section style={{
-        padding: 'clamp(60px,10vw,100px) clamp(16px,4vw,48px)',
-        background: 'linear-gradient(135deg,#0A2540,#001F3F)',
-        textAlign: 'center', position: 'relative', overflow: 'hidden',
-      }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center,rgba(0,212,255,0.09) 0%,transparent 70%)' }} />
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '620px', margin: '0 auto' }}>
-          <h2 style={{ fontSize: 'clamp(26px,4vw,48px)', fontWeight: 800, marginBottom: '16px', color: 'white' }}>
-            Prêt à débattre ?
-          </h2>
-          <p style={{
-            color: 'rgba(255,255,255,0.55)', fontSize: 'clamp(14px,1.8vw,18px)',
-            marginBottom: '36px', lineHeight: 1.65,
-          }}>
-            Rejoignez la communauté des débatteurs haïtiens.<br />Gratuit pour commencer.
-          </p>
-          {!estConnecte && (
-            <Link href="/auth/inscription" style={{
-              display: 'inline-block',
-              background: 'linear-gradient(135deg,#00D4FF,#7B61FF)', color: 'white',
-              padding: 'clamp(14px,2vw,18px) clamp(28px,4vw,48px)',
-              borderRadius: '14px', fontWeight: 700,
-              fontSize: 'clamp(14px,1.8vw,18px)',
-              textDecoration: 'none',
-              boxShadow: '0 8px 32px rgba(0,212,255,0.28)',
-            }}>
-              Créer mon compte gratuitement 🚀
+      {/* ══════════════ CTA FINAL ══════════════ */}
+      {!estConnecte && (
+        <section style={{ padding: '80px 40px', background: 'var(--ink)', textAlign: 'center' }}>
+          <div style={{ maxWidth: '560px', margin: '0 auto' }}>
+            {/* Mini vase */}
+            <svg width="32" height="38" viewBox="0 0 32 38" fill="none" style={{ marginBottom: '24px', opacity: .35 }}>
+              <path d="M16 2C12.5 5,9 8,7 11C5 14,4.5 17,5.5 20C6.5 22,9 24,10 27C11.5 30,11.5 33,10 35.5C12 37,14 37.5,16 37.5C18 37.5,20 37,22 35.5C20.5 33,20.5 30,22 27C23 24,25.5 22,26.5 20C27.5 17,27 14,25 11C23 8,19.5 5,16 2Z" fill="#F4F0E9"/>
+            </svg>
+            <h2 style={{ fontFamily: 'Georgia,serif', fontSize: '32px', fontWeight: 'normal', color: 'var(--page)', marginBottom: '14px', letterSpacing: '-.015em' }}>
+              Prêt à débattre ?
+            </h2>
+            <p style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: '14px', color: 'rgba(244,240,233,0.50)', lineHeight: '1.7', marginBottom: '36px' }}>
+              Rejoignez la communauté. Gratuit pour commencer.
+            </p>
+            <Link href="/auth/inscription" className="dh-btn dh-btn-inv">
+              Créer mon compte
             </Link>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* ══════════════ FOOTER ══════════════ */}
-      <footer style={{
-        background: '#060A14', padding: 'clamp(28px,4vw,40px) clamp(16px,4vw,48px)',
-        textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)',
-      }}>
-        <div style={{ color: 'rgba(255,255,255,0.25)', fontSize: '13px', marginBottom: '16px' }}>
-          🇭🇹 Plateforme Débat Haïti — Tous droits réservés 2026
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 'clamp(12px,2vw,28px)', flexWrap: 'wrap' }}>
-          {[['Débats','/debats'],['Formations','/formations'],['Tournois','/tournois'],['Contact','/contact'],['Galerie','/galerie']].map(([label,href]) => (
-            <Link key={label} href={href} style={{ color: 'rgba(255,255,255,0.35)', fontSize: '13px', textDecoration: 'none' }}>
-              {label}
-            </Link>
-          ))}
+      <footer style={{ background: 'var(--page2)', padding: '32px 40px', borderTop: '1px solid var(--line2)' }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <div style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: '11px', color: 'var(--muted)' }}>
+            Debat Haiti — Tous droits réservés 2026
+          </div>
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+            {[['Débats', '/debats'], ['Formations', '/formations'], ['Tournois', '/tournois'], ['Contact', '/contact']].map(([label, href]) => (
+              <Link key={label} href={href} style={{ fontFamily: "'Helvetica Neue',Arial,sans-serif", fontSize: '11px', color: 'var(--muted)', textDecoration: 'none', letterSpacing: '.04em', transition: 'color .15s' }}>
+                {label}
+              </Link>
+            ))}
+          </div>
         </div>
       </footer>
     </div>

@@ -169,7 +169,7 @@ export default function Chatbot() {
         style={{
           position: 'fixed', bottom: '24px', right: '24px',
           width: '56px', height: '56px',
-          background: 'linear-gradient(135deg, #00D4FF, #7B61FF)',
+          background: 'var(--ink)',
           color: 'white', borderRadius: '50%',
           boxShadow: '0 4px 20px rgba(0,212,255,0.4)',
           border: 'none', cursor: 'pointer',
@@ -281,7 +281,7 @@ export default function Chatbot() {
               type="submit"
               disabled={chargement}
               style={{
-                background: 'linear-gradient(135deg, #00D4FF, #7B61FF)',
+                background: 'var(--ink)',
                 color: 'white', border: 'none', borderRadius: '12px',
                 padding: '8px 14px', fontSize: '13px', fontWeight: 600,
                 cursor: 'pointer', opacity: chargement ? 0.5 : 1,

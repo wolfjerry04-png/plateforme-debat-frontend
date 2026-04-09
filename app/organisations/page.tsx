@@ -20,7 +20,7 @@ export default function PageOrganisations() {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="dh-simple-page">
       <h1 className="text-2xl font-bold text-blue-900 mb-2">
         Organisations partenaires
       </h1>

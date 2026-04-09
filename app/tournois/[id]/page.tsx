@@ -109,7 +109,7 @@ export default function PageDetailTournoi() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="dh-simple-page">
 
         {/* En-tête du tournoi */}
         <div style={{ background: 'linear-gradient(135deg, #0A2540, #001F3F)', borderRadius: '20px', padding: '32px', marginBottom: '24px', color: 'white' }}>
